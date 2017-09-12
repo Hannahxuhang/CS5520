@@ -24,8 +24,8 @@ public class AboutMeActivity extends AppCompatActivity {
                     PERMISSIONS_REQUEST_READ_PHONE_STATE);
         } else {
             String deviceId = getDeviceImei();
-            TextView textView = (TextView) findViewById(R.id.textView8);
-            textView.setText(deviceId);
+            TextView textView8 = (TextView) findViewById(R.id.textView8);
+            textView8.setText(deviceId);
         }
     }
 
@@ -35,8 +35,8 @@ public class AboutMeActivity extends AppCompatActivity {
         if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             String deviceId = getDeviceImei();
-            TextView textView = (TextView) findViewById(R.id.textView8);
-            textView.setText(deviceId);
+            TextView textView8 = (TextView) findViewById(R.id.textView8);
+            textView8.setText(deviceId);
         }
     }
 

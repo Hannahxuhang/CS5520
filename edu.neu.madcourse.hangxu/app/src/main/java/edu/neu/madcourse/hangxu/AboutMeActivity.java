@@ -10,10 +10,12 @@ import android.widget.TextView;
 
 public class AboutMeActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 999;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_me);
+
         // set name of the title of this Activity
         getSupportActionBar().setTitle("About Me");
 
@@ -24,7 +26,7 @@ public class AboutMeActivity extends AppCompatActivity {
                     PERMISSIONS_REQUEST_READ_PHONE_STATE);
         } else {
             String deviceId = getDeviceImei();
-            TextView textView8 = (TextView) findViewById(R.id.textView8);
+            TextView textView8 = (TextView) findViewById(R.id.textView6);
             textView8.setText(deviceId);
         }
     }
@@ -35,7 +37,7 @@ public class AboutMeActivity extends AppCompatActivity {
         if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             String deviceId = getDeviceImei();
-            TextView textView8 = (TextView) findViewById(R.id.textView8);
+            TextView textView8 = (TextView) findViewById(R.id.textView6);
             textView8.setText(deviceId);
         }
     }

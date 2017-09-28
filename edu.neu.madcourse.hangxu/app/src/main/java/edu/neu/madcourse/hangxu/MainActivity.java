@@ -1,14 +1,10 @@
 package edu.neu.madcourse.hangxu;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -27,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Called when the user taps the About button
+     * Called when the user clicks the About button
      * @param view The view About button
      */
     public void aboutMe(View view) {
@@ -36,10 +32,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Called when the user taps the Generate Error button
+     * Called when the user clicks the Generate Error button
      * @param view The view Generate Error button
      */
     public void generateError(View view) {
         throw new RuntimeException("Unfortunately, this App has Stopped!");
+    }
+
+    /**
+     * Called when the user clicks the Dictionary button
+     * @param view The view Dictionary button
+     */
+    public void dictionary(View view) {
+        Intent intent = new Intent(this, MyDictionary.class);
+        startActivity(intent);
     }
 }

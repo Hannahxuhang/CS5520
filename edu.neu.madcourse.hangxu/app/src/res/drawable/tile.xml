@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ ! Excerpted from "Hello, Android",
+ ! published by The Pragmatic Bookshelf.
+ ! Copyrights apply to this code. It may not be used to create training material,
+ ! courses, books, articles, and the like. Contact us if you are in doubt.
+ ! We make no guarantees that this code is fit for any purpose.
+ ! Visit http://www.pragmaticprogrammer.com/titles/eband4 for more book information.
+-->
+<level-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:drawable="@drawable/tile_available"
+        android:maxLevel="0" />
+
+    <item
+        android:drawable="@drawable/a"
+        android:maxLevel="1" />
+    <item
+        android:drawable="@drawable/b"
+        android:maxLevel="2" />
+    <item
+        android:drawable="@drawable/c"
+        android:maxLevel="3" />
+
+    <item
+        android:drawable="@drawable/d"
+        android:maxLevel="4" />
+    <item
+        android:drawable="@drawable/e"
+        android:maxLevel="5" />
+    <item
+        android:drawable="@drawable/f"
+        android:maxLevel="6" />
+    <item
+        android:drawable="@drawable/g"
+        android:maxLevel="7" />
+    <item
+        android:drawable="@drawable/h"
+        android:maxLevel="8" />
+    <item
+        android:drawable="@drawable/i"
+        android:maxLevel="9" />
+    <item
+        android:drawable="@drawable/j"
+        android:maxLevel="10" />
+    <item
+        android:drawable="@drawable/k"
+        android:maxLevel="11" />
+    <item
+        android:drawable="@drawable/l"
+        android:maxLevel="12" />
+    <item
+        android:drawable="@drawable/m"
+        android:maxLevel="13" />
+    <item
+        android:drawable="@drawable/n"
+        android:maxLevel="14" />
+    <item
+        android:drawable="@drawable/o"
+        android:maxLevel="15" />
+    <item
+        android:drawable="@drawable/p"
+        android:maxLevel="16" />
+    <item
+        android:drawable="@drawable/q"
+        android:maxLevel="17" />
+    <item
+        android:drawable="@drawable/r"
+        android:maxLevel="18" />
+    <item
+        android:drawable="@drawable/s"
+        android:maxLevel="19" />
+    <item
+        android:drawable="@drawable/t"
+        android:maxLevel="20" />
+    <item
+        android:drawable="@drawable/u"
+        android:maxLevel="21" />
+    <item
+        android:drawable="@drawable/v"
+        android:maxLevel="22" />
+    <item
+        android:drawable="@drawable/w"
+        android:maxLevel="23" />
+    <item
+        android:drawable="@drawable/x"
+        android:maxLevel="24" />
+    <item
+        android:drawable="@drawable/y"
+        android:maxLevel="25" />
+    <item
+        android:drawable="@drawable/z"
+        android:maxLevel="26" />
+    <item
+        android:drawable="@drawable/tile_empty"
+        android:maxLevel="28" />
+
+
+
+</level-list>

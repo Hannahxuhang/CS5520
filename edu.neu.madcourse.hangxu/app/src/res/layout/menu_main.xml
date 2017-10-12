@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WordGame">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/wallpaper"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/fragment_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            class="edu.neu.madcourse.hangxu.MainFragment"
+            tools:layout="@layout/fragment_main"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/thinking"/>
+
+</FrameLayout>

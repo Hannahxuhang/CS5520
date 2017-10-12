@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#CCCCFF</color>
+    <color name="colorPrimaryDark">#D1D1E0</color>
+    <color name="colorAccent">#DE7FCE</color>
+    <color name="dark_border_color">#ffffff</color>
+    <color name="solid_empty_color">#f8ecf2</color>
+    <color name="available_color">#ecc6d9</color>
+    <color name="border_color">#ccffff</color>
+    <color name="field_color">#ffffff</color>
+    <color name="thinking_background_color">#ccd1ff</color>
+    <color name="scroggle_title_color">#9485a8</color>
+    <color name="scroggle_background_color">#fff2f2</color>
+</resources>

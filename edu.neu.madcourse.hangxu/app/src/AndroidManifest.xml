@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.neu.madcourse.hangxu">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo_corp_rectangle"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_circle"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AboutMeActivity"
+                  android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".MyDictionary"
+                  android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".Acknowledgements"
+                  android:parentActivityName=".MyDictionary"></activity>
+        <activity android:name=".WordGame"
+                  android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".WordGameActivity"
+                  android:parentActivityName=".WordGame"></activity>
+    </application>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+</manifest>

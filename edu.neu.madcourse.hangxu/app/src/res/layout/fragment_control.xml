@@ -9,14 +9,21 @@
     tools:context=".WordGameActivity">
 
     <Button
-        android:id="@+id/button_quit"
+        android:id="@+id/button_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:text="@string/button_ok"/>
+
+    <Button
+        android:id="@+id/button_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation_low"
         android:text="@string/button_pause"/>
 
     <Button
-        android:id="@+id/button_pause"
+        android:id="@+id/button_quit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/elevation_low"

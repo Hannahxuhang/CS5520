@@ -1,6 +1,5 @@
 package edu.neu.madcourse.hangxu;
 
-import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +10,7 @@ import android.util.Log;
  * Class used for Scroggle game Activity
  */
 
-public class WordGameActivity extends Activity {
+public class WordGameActivity extends FragmentActivity {
 
     public static final String TAG = "Scroggle";
     public static final String KEY_RESTORE = "key_restore";

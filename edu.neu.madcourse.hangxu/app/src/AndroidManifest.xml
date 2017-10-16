@@ -22,11 +22,12 @@
                   android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".MyDictionary"
                   android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".Acknowledgements"
-                  android:parentActivityName=".MyDictionary"></activity>
+        <activity android:name=".Acknowledgements"></activity>
         <activity android:name=".WordGame"
                   android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".WordGameActivity"
+                  android:parentActivityName=".WordGame"></activity>
+        <activity android:name=".Instructions"
                   android:parentActivityName=".WordGame"></activity>
     </application>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />

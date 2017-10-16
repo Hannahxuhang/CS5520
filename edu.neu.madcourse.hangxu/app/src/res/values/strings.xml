@@ -23,6 +23,9 @@
     <string name="textView_scroggle">Scroggle</string>
     <string name="button_instruction">Instruction</string>
     <string name="button_wordGame">Word Game</string>
+    <string name="button_ok">OK</string>
+    <string name="textView_phase1">Phase 1</string>
+    <string name="textView_phase2">Phase 2</string>
 
     <!-- Word Game - Preference screen strings -->
     <string name="pref_scroggle_music_title">Music</string>

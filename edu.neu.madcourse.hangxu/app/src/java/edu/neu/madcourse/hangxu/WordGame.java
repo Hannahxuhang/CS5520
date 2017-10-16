@@ -3,7 +3,6 @@ package edu.neu.madcourse.hangxu;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 /**
  * Class used for the main menu activity of Scroggle game.

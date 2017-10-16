@@ -5,7 +5,7 @@
     <color name="colorAccent">#DE7FCE</color>
     <color name="dark_border_color">#ffffff</color>
     <color name="solid_empty_color">#f8ecf2</color>
-    <color name="available_color">#ecc6d9</color>
+    <color name="available_color">#000000</color>
     <color name="border_color">#ccffff</color>
     <color name="field_color">#ffffff</color>
     <color name="thinking_background_color">#ccd1ff</color>

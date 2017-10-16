@@ -1,6 +1,7 @@
 package edu.neu.madcourse.hangxu;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -12,13 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
@@ -38,14 +42,15 @@ public class GameFragment extends Fragment {
     static private int smallIds[] = {R.id.small1, R.id.small2, R.id.small3, R.id.small4, R.id.small5,
             R.id.small6, R.id.small7, R.id.small8, R.id.small9,};
 
-    private static final int COLOR_AVAILABLE = Color.argb(255, 250, 234, 245);
-    private static final int COLOR_SELECTED = Color.argb(255, 204, 255, 255);
-    private static final int COLOR_LOCKED = Color.argb(255, 149, 149, 183);
-    private static final int COLOR_UNAVAILABLE = Color.argb(255, 255, 204, 153);
-    private static final int COLOR_HIDE = Color.argb(255, 204, 255, 204);
-    private static final int COLOR_PAUSED = Color.argb(255, 204, 204, 0);
+    private static final int COLOR_AVAILABLE = Color.argb(0, 0, 0, 0);
+    private static final int COLOR_SELECTED = Color.argb(150, 0, 0, 0);
+    private static final int COLOR_LOCKED = Color.argb(150, 102, 0, 102);
+    private static final int COLOR_UNAVAILABLE = Color.argb(100, 0, 0, 153);
+    private static final int COLOR_HIDE = Color.argb(100, 128, 0, 0);
 
     public Integer[][] alphabets;
+    public char[] letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r',
+            's','t','u','v','w','x','y','z'};
     public Integer[][] seed = {{0,1,2,5,4,3,6,7,8},
                                {1,2,4,5,8,7,6,3,0},
                                {4,2,5,8,7,6,3,0,1},
@@ -59,32 +64,33 @@ public class GameFragment extends Fragment {
                                {7,4,8,5,2,1,0,3,6}};
 
     public ArrayList<Integer[]> nineLetterWords = new ArrayList<>();
-    public ArrayList<Long> wordsDetected = new ArrayList<>();
+    //public ArrayList<Long> wordsDetected = new ArrayList<>();
+    public HashSet<String> wordSet = new HashSet<>();
     public ArrayList<String> words = new ArrayList<>();
+    public ArrayList<Tile> phaseOneTiles = new ArrayList<>();
 
     private Tile wholeBoard = new Tile(this);
     private Tile[] largeTiles = new Tile[9];
-    private Tile[][] smallTiles = new Tile[9][9];
+    public Tile[][] smallTiles = new Tile[9][9];
     private Set<Tile> availableTiles = new HashSet<>();
-    private Stack<Tile> currentTiles = new Stack<>();
+    public Stack<Tile> currentTiles = new Stack<>();
 
     private int soundX, soundMiss, soundRewind;
     private SoundPool soundPool;
     private float volume = 1f;
     private int lastLarge;
     private int lastSmall;
-    public long[] wordValues = new long[432335];
-    public char[] letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r',
-            's','t','u','v','w','x','y','z'};
+
+    public String currentWord = "";
 
     private int timerValue = 90;
     private int phaseValue = 1;
     private int scoreValue = 0;
 
     private TextView timer, phase, score;
-    private BloomFilter<String> bloomFilter;
     private Handler handler = new Handler();
     private Runnable runnable;
+    private BloomFilter<String> bloomFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +98,9 @@ public class GameFragment extends Fragment {
         // retain this fragment across configuration changes
         setRetainInstance(true);
 
-        loadDictionary();
+        loadBitsetFromFile(R.raw.wordlist);
+
+        setWordBoard();
         // set timer, phase, score's value
         timerValue = 90;
         phaseValue = 1;
@@ -109,7 +117,7 @@ public class GameFragment extends Fragment {
         soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
         soundX = soundPool.load(getActivity(), R.raw.dictionary, 1);
         soundMiss = soundPool.load(getActivity(), R.raw.jingle_bell, 1);
-        soundRewind = soundPool.load(getActivity(), R.raw.chimes_glassy, 1);
+        soundRewind = soundPool.load(getActivity(), R.raw.hand_bell, 1);
     }
 
     @Override
@@ -132,21 +140,23 @@ public class GameFragment extends Fragment {
     public void startTimer() {
         timer.setText(String.valueOf(timerValue));
 
-        if (timerValue == 45) {
-            timer.setText("Hurry!: " + timerValue);
-            timerValue--;
-            handler.postDelayed(runnable, 1000);
-        } else if (timerValue > 0 && phaseValue == 1) {
+        if (timerValue > 0 && phaseValue == 1) {
             timerValue--;
             handler.postDelayed(runnable, 1000);
         } else if (timerValue == 0 && phaseValue == 1) {
             phaseValue = 2;
             timerValue = 90;
             scoreValue = scoreValue * 2;
-
             phase.setText("Phase - " + 2);
-            hideAllLockedBoard();
-            makeAllLockedAbailable();
+
+            for (int large = 0; large < 9; large++) {
+                for (int small = 0; small < 9; small++) {
+                    Tile tile = smallTiles[large][small];
+                    tile.setColorMode(COLOR_HIDE);
+                }
+            }
+            availableTiles.clear();
+            setAvailableFromPhaseOne();
             updateAllTiles();
             handler.postDelayed(runnable, 1000);
         } else if (timerValue > 0 && phaseValue == 2) {
@@ -156,16 +166,29 @@ public class GameFragment extends Fragment {
             phase.setText("Finished");
             phaseValue = 0;
             handler.removeCallbacks(runnable);
+
+            // display the word list in a Toast
+            Context context = getActivity().getApplicationContext();
+            CharSequence text = getWordList();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
         }
     }
 
-    public void hideAllLockedBoard() {
-        for (int large = 0; large < 9; large++) {
-            for (int small = 0; small < 9; small++) {
-                Tile tile = smallTiles[large][small];
-                hideLockedBoard(tile);
-            }
+    /**
+     * Helper method used for getting word list.
+     * @return the word list which has been detected
+     */
+    private CharSequence getWordList() {
+        String wordListCharSeq = "Word List is: ";
+        Iterator<String> iterator = wordSet.iterator();
+        while (iterator.hasNext()) {
+            wordListCharSeq = wordListCharSeq + iterator.next() + ", ";
         }
+        wordListCharSeq = wordListCharSeq.substring(0, wordListCharSeq.length() - 2);
+        return wordListCharSeq;
     }
 
     public void hideLockedBoard(Tile smallTile) {
@@ -179,31 +202,17 @@ public class GameFragment extends Fragment {
         }
     }
 
-    public void makeAllLockedAbailable() {
-        for (int large = 0; large < 9; large++) {
-            for (int small = 0; small < 9; small++) {
-                Tile tile = smallTiles[large][small];
-                if (tile.getCharLevel() == COLOR_LOCKED) {
-                    tile.setColorMode(COLOR_AVAILABLE);
-                    addToAvailable(tile);
-                }
-            }
-        }
-    }
-
-    public void loadDictionary() {
+    public void setWordBoard() {
         try {
             String line;
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("wordList.txt")));
             char[] letters;
-            int counter = 0;
+
             while ((line = bufferedReader.readLine()) != null) {
-                counter++;
                 letters = line.toLowerCase().toCharArray();
-                wordValues[counter] = encode(letters);
+                encode(letters);
             }
             bufferedReader.close();
-            Arrays.sort(wordValues);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -220,10 +229,6 @@ public class GameFragment extends Fragment {
 
     public void setAlphabets(Integer[][] alphabets) {
         this.alphabets = alphabets;
-    }
-
-    public Integer[][] getAlphabets() {
-        return alphabets;
     }
 
     private void initGame() {
@@ -266,7 +271,7 @@ public class GameFragment extends Fragment {
     }
 
     // Make only the clicked smallBoard Tile available
-    private void setAvailableFromLastMove(int large, int small) {
+    public void setAvailableFromLastMove(int large, int small) {
         if (large != -1) {
             for (int i = 0; i < 9; i++) {
                 if (i != small) {
@@ -283,15 +288,24 @@ public class GameFragment extends Fragment {
         }
     }
 
-    private void setAvailable(int large, int small) {
+    public void setAvailableFromPhaseOne() {
+        for (Tile tile : phaseOneTiles) {
+            tile.setColorMode(COLOR_AVAILABLE);
+            addToAvailable(tile);
+        }
+        Log.d(TAG, "availableTiles size: " + availableTiles.size());
+    }
+
+    public void setAvailable(int large, int small) {
         Tile tile = smallTiles[large][small];
         if (!(tile.getColorMode() == COLOR_LOCKED || tile.getColorMode() == COLOR_HIDE)) {
             tile.setColorMode(COLOR_AVAILABLE);
             addToAvailable(tile);
+            Log.d(TAG, "color mode: " + tile.getColorMode());
         }
     }
 
-    private void setAllAvailable() {
+    public void setAllAvailable() {
         for (int large = 0; large < 9; large++) {
             for (int small = 0; small < 9; small++) {
                 setAvailable(large, small);
@@ -299,19 +313,20 @@ public class GameFragment extends Fragment {
         }
     }
 
-    private void addToAvailable(Tile tile) {
+    public void addToAvailable(Tile tile) {
         tile.animate();
         availableTiles.add(tile);
     }
 
-    private void setSelected(int large, int small) {
+    public void setSelected(int large, int small) {
         Tile tile = smallTiles[large][small];
         tile.setColorMode(COLOR_SELECTED);
     }
 
-    private void setLocked(Tile tile) {
+    public void setLocked(Tile tile) {
         tile.setColorMode(COLOR_LOCKED);
         availableTiles.remove(tile);
+        Log.d(TAG, "lock color mode: " + tile.getColorMode());
     }
 
     private void makeMove(int large, int small) {
@@ -331,6 +346,7 @@ public class GameFragment extends Fragment {
         Tile tile = smallTiles[large][small];
         setSelected(large, small);
         currentTiles.push(tile);
+        setUnavailable(large, small);
         updateAllTiles();
     }
 
@@ -361,34 +377,33 @@ public class GameFragment extends Fragment {
                         if (isAvailable(smallTile)) {
                             soundPool.play(soundX, volume, volume, 1, 0, 1f);
                             if (currentTiles.contains(smallTile)) {
-                                if (wordExists()) {
-                                    if (phaseValue != 2) {
-                                        for (Tile tile : currentTiles) {
-                                            setLocked(tile);
-                                        }
-                                        currentTiles.clear();
-                                        hideLockedBoard(smallTile);
-                                        setAllAvailable();
-                                    } else {
-                                        currentTiles.clear();
-                                        setAllAvailable();
+                                if (bloomFilter.contains(currentWord)) {
+                                    for (Tile tile : currentTiles) {
+                                        setLocked(tile);
                                     }
-                                    score.setText("Score: " + scoreValue);
+                                    currentTiles.clear();
+                                    currentWord = "";
+                                    hideLockedBoard(smallTile);
+                                    setAllAvailable();
+
                                     updateAllTiles();
                                 } else {
                                     scoreValue = scoreValue - (scoreValue / 5);
                                     soundPool.play(soundMiss, volume, volume, 1, 0, 1f);
                                     currentTiles.clear();
+                                    currentWord = "";
                                     setAllAvailable();
                                     updateAllTiles();
                                 }
                             } else if (phaseValue == 2) {
                                 makeMovePhase2(fLarge, fSmall);
-                            } else if (isAdjacent(fLarge, fSmall)) {
-                                makeMove(fLarge, fSmall);
+                            } else {
+                                if (isAdjacent(fLarge, fSmall)) {
+                                    makeMove(fLarge, fSmall);
+                                }
                             }
                         } else {
-                            soundPool.play(soundMiss, volume, volume, 1, 0, 1f);
+                            soundPool.play(soundRewind, volume, volume, 1, 0, 1f);
                         }
                     }
                 });
@@ -396,35 +411,27 @@ public class GameFragment extends Fragment {
         }
     }
 
-
-
     public boolean wordExists() {
-        long value = 0;
         int wordScore = 0;
-        String word = "";
 
         for (Tile tile : currentTiles) {
             int num = tile.getCharLevel();
             wordScore = wordScore + calScore(num);
-            word = word + letters[num - 1];
-            if (num < 10) {
-                value = value * 10 + num;
-            } else {
-                value = value * 100 + num;
-            }
         }
-        if (value == 0) {
+        if (!bloomFilter.contains(currentWord)) {
             return false;
-        } else if (Arrays.binarySearch(wordValues, value) > 0) {
-            if (!wordsDetected.contains(value)) {
+        } else {
+            Log.d(TAG, currentWord + "word exists!");
+            if (!wordSet.contains(currentWord)) {
                 if (currentTiles.size() == 9 && phaseValue == 1) {
                     wordScore = wordScore * 2;
                 }
-                words.add(0, word);
+                words.add(0, currentWord);
                 // refresh score value
                 scoreValue = scoreValue + wordScore;
                 score.setText("Score: " + scoreValue);
-                wordsDetected.add(value);
+                Log.d(TAG, "set score text!");
+                wordSet.add(currentWord);
                 return true;
             }
         }
@@ -453,7 +460,7 @@ public class GameFragment extends Fragment {
         return availableTiles.contains(tile);
     }
 
-    private void updateAllTiles() {
+    public void updateAllTiles() {
         wholeBoard.updateDrawableState();
         for (int large = 0; large < 9; large++) {
             largeTiles[large].updateDrawableState();
@@ -523,206 +530,95 @@ public class GameFragment extends Fragment {
         return flag;
     }
 
-    public long encode(char[] letters) {
-        long value = 0;
+    public void encode(char[] letters) {
         if (letters.length == 9) {
             Integer[] nineLetterWord = new Integer[9];
             int i = 0;
             for (char letter : letters) {
                 switch (letter) {
                     case 'a':
-                        value = value * 10 + 1;
                         nineLetterWord[i] = 1;
                         break;
                     case 'b':
-                        value = value * 10 + 2;
                         nineLetterWord[i] = 2;
                         break;
                     case 'c':
-                        value = value * 10 + 3;
                         nineLetterWord[i] = 3;
                         break;
                     case 'd':
-                        value = value * 10 + 4;
                         nineLetterWord[i] = 4;
                         break;
                     case 'e':
-                        value = value * 10 + 5;
                         nineLetterWord[i] = 5;
                         break;
                     case 'f':
-                        value = value * 10 + 6;
                         nineLetterWord[i] = 6;
                         break;
                     case 'g':
-                        value = value * 10 + 7;
                         nineLetterWord[i] = 7;
                         break;
                     case 'h':
-                        value = value * 10 + 8;
                         nineLetterWord[i] = 8;
                         break;
                     case 'i':
-                        value = value * 10 + 9;
                         nineLetterWord[i] = 9;
                         break;
                     case 'j':
-                        value = value * 100 + 10;
                         nineLetterWord[i] = 10;
                         break;
                     case 'k':
-                        value = value * 100 + 11;
                         nineLetterWord[i] = 11;
                         break;
                     case 'l':
-                        value = value * 100 + 12;
                         nineLetterWord[i] = 12;
                         break;
                     case 'm':
-                        value = value * 100 + 13;
                         nineLetterWord[i] = 13;
                         break;
                     case 'n':
-                        value = value * 100 + 14;
                         nineLetterWord[i] = 14;
                         break;
                     case 'o':
-                        value = value * 100 + 15;
                         nineLetterWord[i] = 15;
                         break;
                     case 'p':
-                        value = value * 100 + 16;
                         nineLetterWord[i] = 16;
                         break;
                     case 'q':
-                        value = value * 100 + 17;
                         nineLetterWord[i] = 17;
                         break;
                     case 'r':
-                        value = value * 100 + 18;
                         nineLetterWord[i] = 18;
                         break;
                     case 's':
-                        value = value * 100 + 19;
                         nineLetterWord[i] = 19;
                         break;
                     case 't':
-                        value = value * 100 + 20;
                         nineLetterWord[i] = 20;
                         break;
                     case 'u':
-                        value = value * 100 + 21;
                         nineLetterWord[i] = 21;
                         break;
                     case 'v':
-                        value = value * 100 + 22;
                         nineLetterWord[i] = 22;
                         break;
                     case 'w':
-                        value = value * 100 + 23;
                         nineLetterWord[i] = 23;
                         break;
                     case 'x':
-                        value = value * 100 + 24;
                         nineLetterWord[i] = 24;
                         break;
                     case 'y':
-                        value = value * 100 + 25;
                         nineLetterWord[i] = 25;
                         break;
                     case 'z':
-                        value = value * 100 + 26;
                         nineLetterWord[i] = 26;
                         break;
                 }
                 i++;
             }
             nineLetterWords.add(nineLetterWord);
-        } else {
-            for (char letter : letters) {
-                switch (letter) {
-                    case 'a':
-                        value = value * 10 + 1;
-                        break;
-                    case 'b':
-                        value = value * 10 + 2;
-                        break;
-                    case 'c':
-                        value = value * 10 + 3;
-                        break;
-                    case 'd':
-                        value = value * 10 + 4;
-                        break;
-                    case 'e':
-                        value = value * 10 + 5;
-                        break;
-                    case 'f':
-                        value = value * 10 + 6;
-                        break;
-                    case 'g':
-                        value = value * 10 + 7;
-                        break;
-                    case 'h':
-                        value = value * 10 + 8;
-                        break;
-                    case 'i':
-                        value = value * 10 + 9;
-                        break;
-                    case 'j':
-                        value = value * 100 + 10;
-                        break;
-                    case 'k':
-                        value = value * 100 + 11;
-                        break;
-                    case 'l':
-                        value = value * 100 + 12;
-                        break;
-                    case 'm':
-                        value = value * 100 + 13;
-                        break;
-                    case 'n':
-                        value = value * 100 + 14;
-                        break;
-                    case 'o':
-                        value = value * 100 + 15;
-                        break;
-                    case 'p':
-                        value = value * 100 + 16;
-                        break;
-                    case 'q':
-                        value = value * 100 + 17;
-                        break;
-                    case 'r':
-                        value = value * 100 + 18;
-                        break;
-                    case 's':
-                        value = value * 100 + 19;
-                        break;
-                    case 't':
-                        value = value * 100 + 20;
-                        break;
-                    case 'u':
-                        value = value * 100 + 21;
-                        break;
-                    case 'v':
-                        value = value * 100 + 22;
-                        break;
-                    case 'w':
-                        value = value * 100 + 23;
-                        break;
-                    case 'x':
-                        value = value * 100 + 24;
-                        break;
-                    case 'y':
-                        value = value * 100 + 25;
-                        break;
-                    case 'z':
-                        value = value * 100 + 26;
-                        break;
-                }
-            }
         }
-        return value;
     }
 
     /**
@@ -749,12 +645,13 @@ public class GameFragment extends Fragment {
                 sb.append(smallTiles[large][small].getColorMode());
             }
         }
-        sb.append(',');
+        //sb.append(',');
+        /*
         sb.append(wordsDetected.size());
         for (long value : wordsDetected) {
             sb.append(',');
             sb.append(value);
-        }
+        }*/
         sb.append(',');
         sb.append(availableTiles.size());
         for (Tile tile : availableTiles) {
@@ -799,7 +696,7 @@ public class GameFragment extends Fragment {
                 smallTiles[large][small].setColorMode(Integer.parseInt(fields[++index]));
             }
             size = Integer.parseInt(fields[++index]);
-            wordsDetected.clear();
+            //wordSet.clear();
             for (int i = 0; i < size; i++) {
                 int l = Integer.parseInt(fields[++index]);
                 int s = Integer.parseInt(fields[++index]);
@@ -810,7 +707,6 @@ public class GameFragment extends Fragment {
             for (int i = 0; i < size; i++) {
                 String l = fields[++index];
                 words.add(l);
-                //adapter.notifyDataSetChanged();
             }
             size = Integer.parseInt(fields[++index]);
             currentTiles.clear();
@@ -828,5 +724,35 @@ public class GameFragment extends Fragment {
             score.setText("Score: " + scoreValue);
             updateAllTiles();
         }
+    }
+
+    private BloomFilter<String> loadBitsetFromFile(int fileId) {
+        try {
+            InputStream inputStream = getResources().openRawResource(fileId);
+            int fileLength = inputStream.available();
+            Log.d(TAG, "file length = " + fileLength);
+
+            byte[] fileData = new byte[fileLength];
+            DataInputStream dataInputStream = new DataInputStream(inputStream);
+            dataInputStream.readFully(fileData);
+            dataInputStream.close();
+
+            bloomFilter = new BloomFilter<>(0.0001, 450000);
+            bloomFilter = BloomFilter.loadBitsetWithByteArray(fileData, bloomFilter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bloomFilter;
+    }
+
+    public String getCurrentWord(Stack<Tile> currentTiles) {
+        String word = "";
+
+        for (Tile tile : currentTiles) {
+            int num = tile.getCharLevel();
+            word = word + letters[num - 1];
+        }
+        return word;
     }
 }

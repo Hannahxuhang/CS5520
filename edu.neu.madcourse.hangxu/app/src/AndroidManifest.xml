@@ -29,6 +29,20 @@
                   android:parentActivityName=".WordGame"></activity>
         <activity android:name=".Instructions"
                   android:parentActivityName=".WordGame"></activity>
+        <activity android:name=".BoardActivity"></activity>
+        <activity android:name=".RegisterActivity"></activity>
+
+        <service android:name=".fcm.WordGameMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".fcm.WordGameInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

@@ -22,6 +22,8 @@ public class MainFragment extends Fragment {
         View continueButton = rootView.findViewById(R.id.word_game_continue_button);
         View instructionButton = rootView.findViewById(R.id.word_game_instruction_button);
         View acknowledgementsButton = rootView.findViewById(R.id.word_game_acknowledgement_button);
+        View registerButton = rootView.findViewById(R.id.register_button);
+        View boardButton = rootView.findViewById(R.id.board_button);
 
         // set on click event
         newGameButton.setOnClickListener(new View.OnClickListener() {
@@ -45,6 +47,22 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), Instructions.class);
+                startActivity(intent);
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        boardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BoardActivity.class);
                 startActivity(intent);
             }
         });

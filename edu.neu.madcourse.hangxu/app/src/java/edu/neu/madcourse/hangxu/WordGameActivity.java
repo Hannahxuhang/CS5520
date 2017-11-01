@@ -6,6 +6,14 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
+import edu.neu.madcourse.hangxu.database.dao.DataChangeListener;
+import edu.neu.madcourse.hangxu.database.dao.GameDao;
+import edu.neu.madcourse.hangxu.database.dao.UserDao;
+import edu.neu.madcourse.hangxu.model.Game;
+
 /**
  * Class used for Scroggle game Activity
  */
@@ -19,6 +27,10 @@ public class WordGameActivity extends FragmentActivity {
     private MediaPlayer mediaPlayer;
     private Handler handler = new Handler();
     private GameFragment gameFragment;
+
+    private GameDao gameDao;
+    private UserDao userDao;
+    private Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +46,29 @@ public class WordGameActivity extends FragmentActivity {
             }
         }
         Log.d(TAG, "restore = " + restore);
+
+        gameDao = new GameDao();
+        userDao = new UserDao(getApplicationContext());
+
+        userDao.getLastUserName(new DataChangeListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                String userName = dataSnapshot.getValue().toString();
+                game.setUserName(userName);
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
+
+        gameFragment.setGame(game);
     }
 
     @Override

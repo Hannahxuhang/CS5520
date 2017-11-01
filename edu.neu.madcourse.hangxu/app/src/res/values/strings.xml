@@ -38,4 +38,16 @@
     <string name="pref_scroggle_cols">Cols</string>
     <string name="pref_scroggle_difficulty_summary">Difficulty level of the game</string>
     <string name="pref_scroggle_difficulty">Difficulty</string>
+
+    <!-- Realtime Database -->
+    <string name="user_register">Please Register Or Modify Your User Name</string>
+    <string name="user_name_hint">Please Enter Your Name</string>
+    <string name="user_learder_board">User Leader Board</string>
+    <string name="say_congrats">Say Congrats</string>
+    <string name="game_username">UserName: </string>
+    <string name="game_score">Score: </string>
+    <string name="leader_board">Learder Board</string>
+    <string name="score_board">Score Board</string>
+    <string name="board">Leader/Score Board</string>
+    <string name="register">Register UserName</string>
 </resources>

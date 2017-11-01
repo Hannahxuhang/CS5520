@@ -9,6 +9,6 @@
     <color name="border_color">#ccffff</color>
     <color name="field_color">#ffffff</color>
     <color name="thinking_background_color">#ccd1ff</color>
-    <color name="scroggle_title_color">#9485a8</color>
-    <color name="scroggle_background_color">#fff2f2</color>
+    <color name="scroggle_title_color">#ffe6ff</color>
+    <color name="scroggle_background_color">#50000099</color>
 </resources>

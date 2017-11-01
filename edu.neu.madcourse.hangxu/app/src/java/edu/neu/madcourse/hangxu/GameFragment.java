@@ -15,6 +15,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -23,10 +28,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
+
+import edu.neu.madcourse.hangxu.database.dao.DataChangeListener;
+import edu.neu.madcourse.hangxu.database.dao.GameDao;
+import edu.neu.madcourse.hangxu.database.dao.UserDao;
+import edu.neu.madcourse.hangxu.fcm.FCMAsyncTask;
+import edu.neu.madcourse.hangxu.model.Game;
 import edu.neu.madcourse.hangxu.tools.BloomFilter;
 
 /**
@@ -47,6 +59,9 @@ public class GameFragment extends Fragment {
     private static final int COLOR_LOCKED = Color.argb(150, 102, 0, 102);
     private static final int COLOR_UNAVAILABLE = Color.argb(100, 0, 0, 153);
     private static final int COLOR_HIDE = Color.argb(100, 128, 0, 0);
+
+    private static final String NOTIFICATION_TITLE = "New Top Score";
+    private static final String NOTIFICATION_BODY = " is the new top leader!";
 
     public Integer[][] alphabets;
     public char[] letters = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r',
@@ -91,6 +106,9 @@ public class GameFragment extends Fragment {
     private Handler handler = new Handler();
     private Runnable runnable;
     private BloomFilter<String> bloomFilter;
+    private Game game;
+    private GameDao gameDao;
+    private UserDao userDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,8 +150,11 @@ public class GameFragment extends Fragment {
         phase.setText("Phase - " + 1);
         score.setText("Score: " + scoreValue);
 
+
         updateAllTiles();
         runnable.run();
+        game.setScore(scoreValue);
+        game.updateTopScore(scoreValue);
         return rootView;
     }
 
@@ -167,6 +188,8 @@ public class GameFragment extends Fragment {
             phaseValue = 0;
             handler.removeCallbacks(runnable);
 
+            saveGameData();
+
             // display the word list in a Toast
             Context context = getActivity().getApplicationContext();
             CharSequence text = getWordList();
@@ -175,6 +198,41 @@ public class GameFragment extends Fragment {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
+    }
+
+    private void saveGameData() {
+        final String gameId = gameDao.onAddGame(game);
+        userDao.setLastUserName(game.getUserName());
+        userDao.addUserGame(gameId, game);
+        gameDao.getTopGame(new DataChangeListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    GenericTypeIndicator<Map<String, Game>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Game>>() {};
+                    Map<String, Game> games = dataSnapshot.getValue(genericTypeIndicator);
+
+                    for (String topGameId : games.keySet()) {
+                        Log.i("topGameId", topGameId);
+                        if (gameId.equals(topGameId)) {
+                            new FCMAsyncTask("scroggle", gameId, NOTIFICATION_TITLE, games.get(gameId).getUserName() + NOTIFICATION_BODY)
+                            .execute();
+
+                            FirebaseMessaging.getInstance().subscribeToTopic(gameId);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     /**
@@ -233,6 +291,7 @@ public class GameFragment extends Fragment {
 
     private void initGame() {
         Log.d(TAG, "init game");
+        initGameClass();
         wholeBoard = new Tile(this);
 
         // Create all the tiles
@@ -249,6 +308,10 @@ public class GameFragment extends Fragment {
         wholeBoard.setSubTiles(largeTiles);
         setAllUnavailable();
         setAvailableFromLastMove(lastLarge, lastSmall);
+    }
+
+    private void initGameClass() {
+        game = new Game();
     }
 
     private void setAllUnavailable() {
@@ -432,6 +495,8 @@ public class GameFragment extends Fragment {
                 score.setText("Score: " + scoreValue);
                 Log.d(TAG, "set score text!");
                 wordSet.add(currentWord);
+                game.setScore(scoreValue);
+                game.updateTopScore(scoreValue);
                 return true;
             }
         }
@@ -722,6 +787,8 @@ public class GameFragment extends Fragment {
             timer.setText(String.valueOf(timerValue));
             phase.setText("Phase - " + 1);
             score.setText("Score: " + scoreValue);
+            game.setScore(scoreValue);
+            game.updateTopScore(scoreValue);
             updateAllTiles();
         }
     }
@@ -755,4 +822,14 @@ public class GameFragment extends Fragment {
         }
         return word;
     }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public int getScore() {
+        return game.getScore();
+    }
+
+
 }

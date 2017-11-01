@@ -56,6 +56,30 @@
         android:text="@string/button_instruction"/>
 
     <Button
+        android:id="@+id/register_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/menu_button_margin"
+        android:padding="@dimen/menu_button_padding"
+        android:background="@color/scroggle_background_color"
+        android:textColor="@color/scroggle_title_color"
+        android:textStyle="bold"
+        android:text="@string/register"/>
+
+    <Button
+        android:id="@+id/board_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/menu_button_margin"
+        android:padding="@dimen/menu_button_padding"
+        android:background="@color/scroggle_background_color"
+        android:textColor="@color/scroggle_title_color"
+        android:textStyle="bold"
+        android:text="@string/board"/>
+
+    <Button
         android:id="@+id/word_game_acknowledgement_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

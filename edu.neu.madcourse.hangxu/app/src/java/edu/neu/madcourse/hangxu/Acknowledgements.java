@@ -29,6 +29,6 @@ public class Acknowledgements extends AppCompatActivity {
                 "https://stackoverflow.com/questions/31370940/how-to-read-a-single-word-or-line-from-a-text-file-java" +
                 "  BloomFilter     http://blog.locut.us/2008/01/12/a-decent-stand-alone-java" +
                 " * -bloom-filter-implementation/");
-        ack_people.setText("Helpful People: Zhiyao Jin");
+        ack_people.setText("Helpful People: Peter Wang");
     }
 }

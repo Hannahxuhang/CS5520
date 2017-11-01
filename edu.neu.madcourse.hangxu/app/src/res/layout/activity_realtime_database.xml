@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/wallpaper"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:id="@+id/database">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_height="0dp"
+            android:text="@string/user_register"
+            android:gravity="center"
+            android:id="@+id/userRegister"
+            android:textColor="@color/scroggle_title_color"
+            android:textSize="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="2.5"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_name"
+                android:gravity="center"
+                android:text=""
+                android:hint="@string/user_name_hint"
+                android:textAlignment="center"
+                android:textColorHint="@color/field_color"
+                android:background="@null"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_height="0dp"
+            android:id="@+id/user_register_ok_button"
+            android:text="@string/button_ok"
+            android:layout_marginBottom="75dp"
+            android:textColor="@color/scroggle_title_color"
+            android:background="@color/scroggle_background_color"
+            android:layout_gravity="center"
+            android:onClick="multiplayerOkButton"
+            android:clickable="true"/>
+
+    </LinearLayout>
+</RelativeLayout>

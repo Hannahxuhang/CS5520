@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:text="timer"
-        android:textColor="@color/scroggle_background_color"
+        android:textColor="@color/scroggle_title_color"
         android:textSize="20sp"
         tools:context=".WordGameActivity"/>
     <TextView
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:text="phase"
-        android:textColor="@color/scroggle_background_color"
+        android:textColor="@color/scroggle_title_color"
         android:textSize="20sp"
         tools:context=".WordGameActivity"/>
     <TextView
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:text="score"
-        android:textColor="@color/scroggle_background_color"
+        android:textColor="@color/scroggle_title_color"
         android:textSize="20sp"
         tools:context=".WordGameActivity"/>
 </LinearLayout>

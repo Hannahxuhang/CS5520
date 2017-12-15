@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorButtonBackground">#70CC6699</color>
+    <color name="colorButtonBackground1">#50000099</color>
+    <color name="colorEditTextHint">#90CC6699</color>
+    <color name="colorButtonText">#FFFFFF</color>
+    <color name="colorButtonText_semi_transparent">#70FFFFFF</color>
+    <color name="colorButtonText_semi_transparent1">#90FFFFFF</color>
+    <color name="colorPostBackground">#50B1E5AC</color>
+    <color name="colorPostBackground1">#70E6FFCC</color>
+    <color name="colorPostBackground2">#BCBCBC</color>
+    <color name="colorPostBackground3">#48233C</color>
+    <color name="colorPostBackground4">#EBC6D9</color>
+    <color name="colorPostBackground5">#73628A</color>
+    <color name="colorNavigationBar">#50F6E7F1</color>
+    <color name="colorNavigationBar_opaque">#F6E7F1</color>
+    <color name="colorRecordText">#F4EEEB</color>
+    <color name="colorForMatching">#546447</color>
+    <color name="colorSettingText">#d3d3d3</color>
+    <color name="colorCursor">#FFCC00</color>
+    <color name="colorCursor1">#E6AC00</color>
+    <color name="colorCursor2">#CC9900</color>
+    <color name="colorForMatching1">#C1C1D7</color>
+    <color name="colorForMatching1_transparent">#80C1C1D7</color>
+    <color name="colorForMatching2">#D1D1E0</color>
+    <color name="colorForMatching3">#B1A5C0</color>
+    <color name="colorForMatching4">#BEB4CB</color>
+    <color name="colorForMatching5">#D8D2E0</color>
+    <color name="colorChatToolBarText">#9494b8</color>
+    <color name="colorGray">#b3b3b3</color>
+    <color name="colorMessageText">#808080</color>
+    <color name="colorMessageBackGround">#E6E6E6</color>
+</resources>

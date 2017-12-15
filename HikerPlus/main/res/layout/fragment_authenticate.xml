@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/control_padding"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bt_shape"
+        android:textColor="@color/colorButtonText"
+        android:layout_marginRight="50dp"
+        android:elevation="4dp"
+        android:text="@string/button_register"/>
+
+    <Button
+        android:id="@+id/button_logIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bt_shape"
+        android:textColor="@color/colorButtonText"
+        android:layout_marginLeft="50dp"
+        android:elevation="@dimen/elevation_low"
+        android:text="@string/button_logIn"/>
+</LinearLayout>

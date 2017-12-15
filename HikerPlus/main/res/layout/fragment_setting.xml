@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPostBackground5"
+    tools:context="hangxu.finalproject.cs5520.hikerplus.fragment.SettingFragment">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/settingProfile"
+        android:layout_width="155dp"
+        android:layout_height="129dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:src="@drawable/profile_img1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="115dp" />
+
+    <TextView
+        android:id="@+id/settingDisplayName"
+        android:layout_width="165dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/display_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingProfile" />
+
+    <TextView
+        android:id="@+id/settingsStatusText"
+        android:layout_width="312dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/profile_default_status"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingDisplayName" />
+
+    <Button
+        android:id="@+id/settingChangeImgButton"
+        android:layout_width="201dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/colorSettingText"
+        android:stateListAnimator="@drawable/state_list_animator_z"
+        android:text="@string/change_pic"
+        android:background="@drawable/bt_shape"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsStatusText" />
+
+    <Button
+        android:id="@+id/settingChangeStatusButton"
+        android:layout_width="201dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/colorSettingText"
+        android:background="@drawable/bt_shape"
+        android:text="@string/change_status"
+        android:stateListAnimator="@drawable/state_list_animator_z"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingChangeImgButton" />
+
+    <Button
+        android:id="@+id/signOutButton"
+        android:layout_width="201dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="22dp"
+        android:textColor="@color/colorSettingText"
+        android:background="@drawable/bt_shape"
+        android:text="@string/sign_out"
+        android:stateListAnimator="@drawable/state_list_animator_z"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingChangeStatusButton" />
+
+</android.support.constraint.ConstraintLayout>
